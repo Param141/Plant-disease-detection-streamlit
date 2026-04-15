@@ -82,13 +82,14 @@ with tab_prediction:
                     # Preprocess the image
                     image_rgb = image.convert('RGB')
                     img_resized = image_rgb.resize(IMG_SIZE)
-                    img_array = np.array(img_resized)
+                    # Ensure the image is converted to float32 BEFORE preprocessing
+                    img_array = np.array(img_resized, dtype=np.float32) 
                     img_array = np.expand_dims(img_array, axis=0)
                     
-                    # ResNet50V2 Preprocessing scales pixels to [-1, 1]
+                    # Apply ResNet preprocessing
                     img_processed = preprocess_input(img_array)
                     
-                    # Predict
+                    # Predict (We pass the array directly)
                     predictions = model.predict(img_processed)[0]
                     predicted_class_index = np.argmax(predictions)
                     predicted_class_name = CLASS_NAMES[predicted_class_index]
